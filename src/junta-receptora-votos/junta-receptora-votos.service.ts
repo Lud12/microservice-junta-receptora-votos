@@ -26,6 +26,8 @@ export class JuntaReceptoraVotosService {
         estado: true,
         creado_en: true,
         modificado_en: true,
+        centro_votacion: true,
+        jrv_miembros: true
       },
     });
   }
