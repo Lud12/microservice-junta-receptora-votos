@@ -27,8 +27,8 @@ export class JuntaReceptoraVotosController {
 
   @MessagePattern(JuntaReceptoraVotosMSG.UPDATE)
   async update(@Payload() payload: any) {
-    const { id, centroVotacionDTO } = payload;
-    return this.juntaReceptoraVotosService.update(id, centroVotacionDTO);
+    const { id, juntaReceptoraVotosDTO } = payload;
+    return this.juntaReceptoraVotosService.update(id, juntaReceptoraVotosDTO);
   }
 
   @MessagePattern(JuntaReceptoraVotosMSG.DELETE)
@@ -41,11 +41,11 @@ export class JuntaReceptoraVotosController {
       return this.juntaReceptoraVotosService.getMembersByJRVId(id_jrv);
   }
 
-  @MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBER_BY_ID)
+  /*@MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBER_BY_ID)
   async getMemberById(@Payload() payload: { id_jrv: string, id_miembro: string }): Promise<Observable<any>> {
     const { id_jrv, id_miembro } = payload;
     return this.juntaReceptoraVotosService.getMemberById(id_jrv, id_miembro);
-  }
+  }*/
 
   @MessagePattern(JuntaReceptoraVotosMSG.CREATE_MEMBER)
   async createMember(@Payload() payload: { id_jrv: string, miembroData: any }): Promise<Observable<any>> {
