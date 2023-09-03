@@ -61,8 +61,8 @@ model personas_naturales {
   genero                 Genero
   id_municipio           Int
   detalle_direccion      String   @db.Text
-  fecha_nacimiento       DateTime
-  fecha_vencidmiento_dui DateTime
+  fecha_nacimiento       DateTime @db.Date
+  fecha_vencimiento_dui DateTime @db.Date
   creado_en              DateTime @default(now())
 
   municipio            municipios             @relation(fields: [id_municipio], references: [id_municipio])
