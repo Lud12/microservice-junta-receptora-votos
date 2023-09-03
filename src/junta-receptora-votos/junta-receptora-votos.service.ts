@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, junta_receptora_votos } from '@prisma/client';
+import { Prisma, jrv_miembros, junta_receptora_votos } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class JuntaReceptoraVotosService {
         creado_en: true,
         modificado_en: true,
         centro_votacion: true,
-        jrv_miembros: true
+        jrv_miembros: true,
       },
     });
   }
@@ -60,30 +60,54 @@ export class JuntaReceptoraVotosService {
     });
   }
 
-  async getMembersByJRVId(id_jrv: string): Promise<any[]> {
-    const id_jrvNumber = parseInt(id_jrv);
+  async getMembersByJRVId(id_jrv: number): Promise<jrv_miembros[]> {
     const members = await this.model.jrv_miembros.findMany({
       where: {
-        id_jrv: id_jrvNumber,
+        id_jrv: id_jrv,
       },
     });
     return members;
   }
 
-  /*async getMemberById() {
-    
-  }*/
-
-  async createMember(id_jrv: string, miembroData: any): Promise<any> {
-    const miembroDataWithJRVId = {
-      ...miembroData,
-      id_jrv: id_jrv,
-    };
-
-    const newMember = await this.model.jrv_miembros.create({
-      data: miembroDataWithJRVId,
+  async getMemberById(
+    id_jrv: number,
+    id_jrv_miembro: number,
+  ): Promise<jrv_miembros> {
+    return await this.model.jrv_miembros.findUnique({
+      where: {
+        id_jrv_miembro: id_jrv_miembro,
+        id_jrv: id_jrv,
+      },
     });
-
-    return newMember;
   }
+
+  async createMember(
+    miembroJrv: Prisma.jrv_miembrosCreateInput,
+  ): Promise<jrv_miembros> {
+    
+    return await this.model.jrv_miembros.create({
+      data: miembroJrv,
+    });
+  }
+
+  async updateMember(
+    id: number,
+    juntaReceptoraVotosDTO: Prisma.jrv_miembrosUncheckedUpdateInput,
+  ): Promise<jrv_miembros> {
+    return await this.model.jrv_miembros.update({
+      where: {
+        id_jrv_miembro: id,
+      },
+      data: juntaReceptoraVotosDTO,
+    });
+  }
+
+  async deleteMember(id: number) {
+    return await this.model.jrv_miembros.delete({
+      where: {
+        id_jrv_miembro: id,
+      },
+    });
+  }
+  
 }

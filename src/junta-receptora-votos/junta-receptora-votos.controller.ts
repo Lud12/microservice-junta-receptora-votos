@@ -6,8 +6,9 @@ import { Observable } from 'rxjs';
 
 @Controller()
 export class JuntaReceptoraVotosController {
-    
-  constructor(private readonly juntaReceptoraVotosService: JuntaReceptoraVotosService) {}
+  constructor(
+    private readonly juntaReceptoraVotosService: JuntaReceptoraVotosService,
+  ) {}
 
   @MessagePattern(JuntaReceptoraVotosMSG.CREATE)
   async create(@Payload() payload: any) {
@@ -37,20 +38,33 @@ export class JuntaReceptoraVotosController {
   }
 
   @MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBERS_BY_JRV)
-  async getMembersByJRVId(@Payload() id_jrv: string): Promise<any[]> {
-      return this.juntaReceptoraVotosService.getMembersByJRVId(id_jrv);
+  async getMembersByJRVId(@Payload() id_jrv: number) {
+    return this.juntaReceptoraVotosService.getMembersByJRVId(id_jrv);
   }
 
-  /*@MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBER_BY_ID)
-  async getMemberById(@Payload() payload: { id_jrv: string, id_miembro: string }): Promise<Observable<any>> {
+  @MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBER_BY_ID)
+  async getMemberById(@Payload() payload: any) {
     const { id_jrv, id_miembro } = payload;
     return this.juntaReceptoraVotosService.getMemberById(id_jrv, id_miembro);
-  }*/
+  }
 
   @MessagePattern(JuntaReceptoraVotosMSG.CREATE_MEMBER)
-  async createMember(@Payload() payload: { id_jrv: string, miembroData: any }): Promise<Observable<any>> {
-    const { id_jrv, miembroData } = payload;
-    return this.juntaReceptoraVotosService.createMember(id_jrv, miembroData);
+  async createMember(@Payload() payload: any) {
+    return this.juntaReceptoraVotosService.createMember(payload);
+  }
+
+  @MessagePattern(JuntaReceptoraVotosMSG.UPDATE_MEMBER)
+  async updateMember(@Payload() payload: any) {
+    const { id_jrv_miembro, miembroData } = payload;
+    return this.juntaReceptoraVotosService.updateMember(
+      id_jrv_miembro,
+      miembroData,
+    );
+  }
+
+  @MessagePattern(JuntaReceptoraVotosMSG.DELETE_MEMBER)
+  async deleteMember(@Payload() id: number) {
+    return this.juntaReceptoraVotosService.deleteMember(id);
   }
 
 }
