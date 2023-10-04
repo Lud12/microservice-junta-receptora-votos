@@ -48,6 +48,14 @@ export class JuntaReceptoraVotosController {
     return this.juntaReceptoraVotosService.getMemberById(id_jrv, id_miembro);
   }
 
+  @MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBERS_BY_ID_PERSONA_NATURAL)
+  async getMemberByIdPersonaNatural(@Payload() payload: any) {
+    const { id_jrv, id_persona_natural } = payload;
+    console.log(id_jrv, id_persona_natural);
+    
+    return this.juntaReceptoraVotosService.getMemberByIdPersonaNatural(id_jrv, id_persona_natural);
+  }
+
   @MessagePattern(JuntaReceptoraVotosMSG.CREATE_MEMBER)
   async createMember(@Payload() payload: any) {
     return this.juntaReceptoraVotosService.createMember(payload);

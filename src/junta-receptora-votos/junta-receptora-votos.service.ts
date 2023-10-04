@@ -81,6 +81,18 @@ export class JuntaReceptoraVotosService {
     });
   }
 
+  async getMemberByIdPersonaNatural(
+    id_jrv: number,
+    id_persona_natural: number,
+  ): Promise<jrv_miembros> {
+    return await this.model.jrv_miembros.findFirst({
+      where: {
+        id_persona_natural: id_persona_natural,
+        id_jrv: id_jrv,
+      },
+    });
+  }
+
   async createMember(
     miembroJrv: Prisma.jrv_miembrosCreateInput,
   ): Promise<jrv_miembros> {
