@@ -12,7 +12,6 @@ export class JuntaReceptoraVotosController {
 
   @MessagePattern(JuntaReceptoraVotosMSG.CREATE)
   async create(@Payload() payload: any) {
-    console.log('prueba');
     return await this.juntaReceptoraVotosService.create(payload);
   }
 
@@ -24,6 +23,11 @@ export class JuntaReceptoraVotosController {
   @MessagePattern(JuntaReceptoraVotosMSG.FIND_ONE)
   async findOne(@Payload() id: number) {
     return this.juntaReceptoraVotosService.findOne(id);
+  }
+
+  @MessagePattern(JuntaReceptoraVotosMSG.FIND_ONE_BY_CODE)
+  async findOneByCode(@Payload() code: string) {
+    return this.juntaReceptoraVotosService.findOneByCode(code);
   }
 
   @MessagePattern(JuntaReceptoraVotosMSG.UPDATE)
@@ -44,16 +48,9 @@ export class JuntaReceptoraVotosController {
 
   @MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBER_BY_ID)
   async getMemberById(@Payload() payload: any) {
-    const { id_jrv, id_miembro } = payload;
-    return this.juntaReceptoraVotosService.getMemberById(id_jrv, id_miembro);
-  }
-
-  @MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBERS_BY_ID_PERSONA_NATURAL)
-  async getMemberByIdPersonaNatural(@Payload() payload: any) {
-    const { id_jrv, id_persona_natural } = payload;
-    console.log(id_jrv, id_persona_natural);
+    const { id_jrv, id_jrv_miembro } = payload;
     
-    return this.juntaReceptoraVotosService.getMemberByIdPersonaNatural(id_jrv, id_persona_natural);
+    return this.juntaReceptoraVotosService.getMemberById(id_jrv, id_jrv_miembro);
   }
 
   @MessagePattern(JuntaReceptoraVotosMSG.CREATE_MEMBER)

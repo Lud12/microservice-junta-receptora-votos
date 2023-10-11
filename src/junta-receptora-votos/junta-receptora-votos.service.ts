@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma, jrv_miembros, junta_receptora_votos } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
 
@@ -26,8 +26,51 @@ export class JuntaReceptoraVotosService {
         estado: true,
         creado_en: true,
         modificado_en: true,
-        centro_votacion: true,
-        jrv_miembros: true,
+        centro_votacion: {
+          select: {
+            id_centro_votacion: true,
+            id_municipio: true,
+            nombre: true,
+            direccion: true,
+            estado: true,
+            creado_en: true,
+            modificado_en: true,
+            municipios: {
+              select: {
+                id_municipio: true,
+                nombre: true,
+                departamentos: {
+                  select: {
+                    id_departamento: true,
+                    nombre: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        jrv_miembros: {
+          select: {
+            id_jrv_miembro: true,
+            id_jrv: true,
+            id_usuario: true,
+            estado: true,
+            usuario: {
+              select: {
+                id_usuario: true,
+                id_rol: true,
+                nombres: true,
+                apellidos: true,
+                dui: true,
+                usuario: true,
+                estado: true,
+                creado_en: true,
+                modificado_en: true,
+                Rol: true,
+              },
+            },
+          },
+        },
       },
     });
   }
@@ -37,6 +80,67 @@ export class JuntaReceptoraVotosService {
       where: {
         id_jrv: id,
       },
+      select: {
+        id_jrv: true,
+        id_centro_votacion: true,
+        codigo: true,
+        estado: true,
+        creado_en: true,
+        modificado_en: true,
+        centro_votacion: {
+          select: {
+            id_centro_votacion: true,
+            id_municipio: true,
+            nombre: true,
+            direccion: true,
+            estado: true,
+            creado_en: true,
+            modificado_en: true,
+            municipios: {
+              select: {
+                id_municipio: true,
+                nombre: true,
+                departamentos: {
+                  select: {
+                    id_departamento: true,
+                    nombre: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        jrv_miembros: {
+          select: {
+            id_jrv_miembro: true,
+            id_jrv: true,
+            id_usuario: true,
+            estado: true,
+            usuario: {
+              select: {
+                id_usuario: true,
+                id_rol: true,
+                nombres: true,
+                apellidos: true,
+                dui: true,
+                usuario: true,
+                estado: true,
+                creado_en: true,
+                modificado_en: true,
+                Rol: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async findOneByCode(code: string): Promise<junta_receptora_votos> {
+    return await this.model.junta_receptora_votos.findFirst({
+      where: {
+        codigo: code,
+      },
     });
   }
 
@@ -44,6 +148,21 @@ export class JuntaReceptoraVotosService {
     id: number,
     juntaReceptoraVotosDTO: Prisma.junta_receptora_votosUpdateInput,
   ): Promise<junta_receptora_votos> {
+    let countCodigo = await this.model.junta_receptora_votos.count({
+      where: {
+        codigo: juntaReceptoraVotosDTO.codigo.toString(),
+        NOT: {
+          id_jrv: id,
+        },
+      },
+    });
+
+    if (countCodigo == 1)
+      throw new HttpException(
+        'Centro de votación ya posee este nombre',
+        HttpStatus.NOT_FOUND,
+      );
+
     return await this.model.junta_receptora_votos.update({
       where: {
         id_jrv: id,
@@ -60,8 +179,61 @@ export class JuntaReceptoraVotosService {
     });
   }
 
-  async getMembersByJRVId(id_jrv: number): Promise<jrv_miembros[]> {
+  async getMembersByJRVId(id_jrv: number): Promise<any> {
     const members = await this.model.jrv_miembros.findMany({
+      select: {
+        id_jrv_miembro: true,
+        id_jrv: true,
+        id_usuario: true,
+        estado: true,
+        jrv: {
+          select: {
+            id_jrv: true,
+            codigo: true,
+            id_centro_votacion: true,
+            estado: true,
+            creado_en: true,
+            modificado_en: true,
+            centro_votacion: {
+              select: {
+                id_centro_votacion: true,
+                id_municipio: true,
+                nombre: true,
+                direccion: true,
+                estado: true,
+                creado_en: true,
+                modificado_en: true,
+                municipios: {
+                  select: {
+                    id_municipio: true,
+                    nombre: true,
+                    departamentos: {
+                      select: {
+                        id_departamento: true,
+                        nombre: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        usuario: {
+          select: {
+            id_usuario: true,
+            id_rol: true,
+            nombres: true,
+            apellidos: true,
+            dui: true,
+            usuario: true,
+            estado: true,
+            creado_en: true,
+            modificado_en: true,
+            Rol: true,
+          },
+        },
+      },
       where: {
         id_jrv: id_jrv,
       },
@@ -72,23 +244,64 @@ export class JuntaReceptoraVotosService {
   async getMemberById(
     id_jrv: number,
     id_jrv_miembro: number,
-  ): Promise<jrv_miembros> {
+  ): Promise<any> {
     return await this.model.jrv_miembros.findUnique({
-      where: {
-        id_jrv_miembro: id_jrv_miembro,
-        id_jrv: id_jrv,
+      select: {
+        id_jrv_miembro: true,
+        id_jrv: true,
+        id_usuario: true,
+        estado: true,
+        jrv: {
+          select: {
+            id_jrv: true,
+            codigo: true,
+            id_centro_votacion: true,
+            estado: true,
+            creado_en: true,
+            modificado_en: true,
+            centro_votacion: {
+              select: {
+                id_centro_votacion: true,
+                id_municipio: true,
+                nombre: true,
+                direccion: true,
+                estado: true,
+                creado_en: true,
+                modificado_en: true,
+                municipios: {
+                  select: {
+                    id_municipio: true,
+                    nombre: true,
+                    departamentos: {
+                      select: {
+                        id_departamento: true,
+                        nombre: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        usuario: {
+          select: {
+            id_usuario: true,
+            id_rol: true,
+            nombres: true,
+            apellidos: true,
+            dui: true,
+            usuario: true,
+            estado: true,
+            creado_en: true,
+            modificado_en: true,
+            Rol: true,
+          },
+        },
       },
-    });
-  }
-
-  async getMemberByIdPersonaNatural(
-    id_jrv: number,
-    id_persona_natural: number,
-  ): Promise<jrv_miembros> {
-    return await this.model.jrv_miembros.findFirst({
       where: {
-        id_persona_natural: id_persona_natural,
         id_jrv: id_jrv,
+        id_jrv_miembro: id_jrv_miembro,
       },
     });
   }
@@ -96,7 +309,6 @@ export class JuntaReceptoraVotosService {
   async createMember(
     miembroJrv: Prisma.jrv_miembrosCreateInput,
   ): Promise<jrv_miembros> {
-    
     return await this.model.jrv_miembros.create({
       data: miembroJrv,
     });
@@ -121,5 +333,4 @@ export class JuntaReceptoraVotosService {
       },
     });
   }
-  
 }

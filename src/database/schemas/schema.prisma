@@ -54,20 +54,19 @@ model candidatos_politicos {
 }
 
 model personas_naturales {
-  id_persona_natural    Int      @id @default(autoincrement())
-  dui                   String   @unique @db.VarChar(10)
-  nombres               String   @db.VarChar(150)
-  apellidos             String   @db.VarChar(150)
-  genero                Genero
-  id_municipio          Int
-  detalle_direccion     String   @db.Text
-  fecha_nacimiento      DateTime @db.Date
-  fecha_vencimiento_dui DateTime @db.Date
-  creado_en             DateTime @default(now())
+  id_persona_natural     Int      @id @default(autoincrement())
+  dui                    String   @unique @db.VarChar(10)
+  nombres                String   @db.VarChar(150)
+  apellidos              String   @db.VarChar(150)
+  genero                 Genero
+  id_municipio           Int
+  detalle_direccion      String   @db.Text
+  fecha_nacimiento       DateTime @db.Date
+  fecha_vencidmiento_dui DateTime
+  creado_en              DateTime @default(now())
 
   municipio            municipios             @relation(fields: [id_municipio], references: [id_municipio])
   candidatos_politicos candidatos_politicos[]
-  jrv_miembros         jrv_miembros[]
   detalles_sufragio    detalles_sufragio[]
 }
 
@@ -98,17 +97,19 @@ model roles {
 }
 
 model usuarios {
-  id_usuario         Int            @id @default(autoincrement())
-  usuario            String         @unique
-  correo_electronico String         @unique
-  clave              String         @db.Text
-  id_rol             Int
-  estado             Boolean        @default(true)
-  creado_en          DateTime       @default(now())
-  modificado_en      DateTime       @updatedAt
-  jrv_miembros       jrv_miembros[]
+  id_usuario    Int      @id @default(autoincrement())
+  id_rol        Int
+  nombres       String
+  apellidos     String
+  dui           String   @unique
+  usuario       String   @unique
+  clave         String   @db.Text
+  estado        Boolean  @default(true)
+  creado_en     DateTime @default(now())
+  modificado_en DateTime @updatedAt
 
-  roles roles @relation(fields: [id_rol], references: [id_rol])
+  jrv_miembros jrv_miembros[]
+  Rol          roles          @relation(fields: [id_rol], references: [id_rol])
 }
 
 model centros_votacion {
@@ -138,18 +139,16 @@ model junta_receptora_votos {
 }
 
 model jrv_miembros {
-  id_jrv_miembro     Int      @id @default(autoincrement())
-  id_jrv             Int
-  id_persona_natural Int
-  id_usuario         Int
-  estado             Estado   @default(ACTIVO)
-  creado_en          DateTime @default(now())
-  modificado_en      DateTime @updatedAt
+  id_jrv_miembro Int      @id @default(autoincrement())
+  id_jrv         Int
+  id_usuario     Int
+  estado         Estado   @default(ACTIVO)
+  creado_en      DateTime @default(now())
+  modificado_en  DateTime @updatedAt
 
-  jrv                  junta_receptora_votos @relation(fields: [id_jrv], references: [id_jrv])
-  informacion_personal personas_naturales    @relation(fields: [id_persona_natural], references: [id_persona_natural])
-  usuario              usuarios              @relation(fields: [id_usuario], references: [id_usuario])
-  detalles_sufragio    detalles_sufragio[]
+  jrv               junta_receptora_votos @relation(fields: [id_jrv], references: [id_jrv])
+  usuario           usuarios              @relation(fields: [id_usuario], references: [id_usuario])
+  detalles_sufragio detalles_sufragio[]
 }
 
 model detalles_sufragio {
