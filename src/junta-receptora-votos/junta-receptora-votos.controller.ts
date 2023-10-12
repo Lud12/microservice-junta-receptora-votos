@@ -41,16 +41,33 @@ export class JuntaReceptoraVotosController {
     return this.juntaReceptoraVotosService.delete(id);
   }
 
+  @MessagePattern(JuntaReceptoraVotosMSG.SET_STATUS_JRV)
+  async changeStatusJrv(@Payload() payload: any) {
+    const { id_jrv } = payload;
+    
+    return this.juntaReceptoraVotosService.changeStatusJrv(id_jrv);
+  }
+
   @MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBERS_BY_JRV)
   async getMembersByJRVId(@Payload() id_jrv: number) {
     return this.juntaReceptoraVotosService.getMembersByJRVId(id_jrv);
   }
 
+  @MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBERS)
+  async getMembers() {
+    return this.juntaReceptoraVotosService.getMembers();
+  }
+
   @MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBER_BY_ID)
   async getMemberById(@Payload() payload: any) {
-    const { id_jrv, id_jrv_miembro } = payload;
+    const { id_jrv_miembro } = payload;
     
-    return this.juntaReceptoraVotosService.getMemberById(id_jrv, id_jrv_miembro);
+    return this.juntaReceptoraVotosService.getMemberById(id_jrv_miembro);
+  }
+
+  @MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBER_BY_USER_ID)
+  async getMemberByUserId(@Payload() payload: any) {
+    return this.juntaReceptoraVotosService.getMemberByUserId(payload.id_usuario);
   }
 
   @MessagePattern(JuntaReceptoraVotosMSG.CREATE_MEMBER)
@@ -70,6 +87,13 @@ export class JuntaReceptoraVotosController {
   @MessagePattern(JuntaReceptoraVotosMSG.DELETE_MEMBER)
   async deleteMember(@Payload() id: number) {
     return this.juntaReceptoraVotosService.deleteMember(id);
+  }
+
+  @MessagePattern(JuntaReceptoraVotosMSG.SET_STATUS_JRV)
+  async changeStatusJrvMember(@Payload() payload: any) {
+    const { id_jrv_miembro } = payload;
+    
+    return this.juntaReceptoraVotosService.changeStatusJrvMember(id_jrv_miembro);
   }
 
 }
