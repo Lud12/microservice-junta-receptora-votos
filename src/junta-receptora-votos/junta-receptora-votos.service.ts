@@ -14,6 +14,76 @@ export class JuntaReceptoraVotosService {
     });
   }
 
+  async findAllByMunicipio(id_municipio: number): Promise<any> {
+    const centrosVotacion = await this.model.centros_votacion.findMany({
+      where: {
+        id_municipio: id_municipio
+      }
+    })
+    const idsCentrosVotacion = centrosVotacion.map((centro) => centro.id_centro_votacion)
+
+    return await this.model.junta_receptora_votos.findMany({
+      where: {
+        id_centro_votacion: {
+          in: idsCentrosVotacion
+        }
+      },
+      select: {
+        id_jrv: true,
+        id_centro_votacion: true,
+        codigo: true,
+        estado: true,
+        creado_en: true,
+        modificado_en: true,
+        centro_votacion: {
+          select: {
+            id_centro_votacion: true,
+            id_municipio: true,
+            nombre: true,
+            direccion: true,
+            estado: true,
+            creado_en: true,
+            modificado_en: true,
+            municipios: {
+              select: {
+                id_municipio: true,
+                nombre: true,
+                departamentos: {
+                  select: {
+                    id_departamento: true,
+                    nombre: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        jrv_miembros: {
+          select: {
+            id_jrv_miembro: true,
+            id_jrv: true,
+            id_usuario: true,
+            estado: true,
+            usuario: {
+              select: {
+                id_usuario: true,
+                id_rol: true,
+                nombres: true,
+                apellidos: true,
+                dui: true,
+                usuario: true,
+                estado: true,
+                creado_en: true,
+                modificado_en: true,
+                Rol: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   async findAll(): Promise<junta_receptora_votos[]> {
     return await this.model.junta_receptora_votos.findMany({
       select: {
@@ -74,7 +144,7 @@ export class JuntaReceptoraVotosService {
 
   async findOne(id: number): Promise<junta_receptora_votos> {
     
-    return await this.model.junta_receptora_votos.findUnique({
+    const members =  await this.model.junta_receptora_votos.findUnique({
       where: {
         id_jrv: id,
       },
@@ -132,6 +202,11 @@ export class JuntaReceptoraVotosService {
         },
       },
     });
+
+    console.log(members);
+
+    return members;
+    
   }
 
   async findOneByCode(code: string): Promise<junta_receptora_votos> {
@@ -195,6 +270,7 @@ export class JuntaReceptoraVotosService {
   }
 
   async getMembersByJRVId(id_jrv: number): Promise<any> {
+
     const members = await this.model.jrv_miembros.findMany({
       select: {
         id_jrv_miembro: true,
@@ -253,6 +329,8 @@ export class JuntaReceptoraVotosService {
         id_jrv: id_jrv,
       },
     });
+    console.log(members);
+    
     return members;
   }
 
@@ -376,7 +454,7 @@ export class JuntaReceptoraVotosService {
     });
   }
 
-  async getMemberByUserId(id_usuario: number): Promise<any> {
+  async getMemberByUserId(id_usuario: number, id_jrv: number): Promise<any> {
     return await this.model.jrv_miembros.findFirst({
       select: {
         id_jrv_miembro: true,
@@ -386,6 +464,7 @@ export class JuntaReceptoraVotosService {
       },
       where: {
         id_usuario: id_usuario,
+        id_jrv: id_jrv
       },
     });
   }

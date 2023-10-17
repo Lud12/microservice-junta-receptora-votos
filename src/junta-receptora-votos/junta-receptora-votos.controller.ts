@@ -16,8 +16,13 @@ export class JuntaReceptoraVotosController {
   }
 
   @MessagePattern(JuntaReceptoraVotosMSG.FIND_ALL)
-  async findAll() {
+  async findByMunicipio() {
     return this.juntaReceptoraVotosService.findAll();
+  }
+
+  @MessagePattern(JuntaReceptoraVotosMSG.FIND_ALL_BY_MUNICIPIO)
+  async findAllByMunicipio(@Payload() payload: any) {
+    return this.juntaReceptoraVotosService.findAllByMunicipio(payload.id_municipio);
   }
 
   @MessagePattern(JuntaReceptoraVotosMSG.FIND_ONE)
@@ -67,7 +72,7 @@ export class JuntaReceptoraVotosController {
 
   @MessagePattern(JuntaReceptoraVotosMSG.GET_MEMBER_BY_USER_ID)
   async getMemberByUserId(@Payload() payload: any) {
-    return this.juntaReceptoraVotosService.getMemberByUserId(payload.id_usuario);
+    return this.juntaReceptoraVotosService.getMemberByUserId(payload.id_usuario, payload.id_jrv);
   }
 
   @MessagePattern(JuntaReceptoraVotosMSG.CREATE_MEMBER)
