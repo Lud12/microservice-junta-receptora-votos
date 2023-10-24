@@ -202,9 +202,6 @@ export class JuntaReceptoraVotosService {
         },
       },
     });
-
-    console.log(members);
-
     return members;
     
   }

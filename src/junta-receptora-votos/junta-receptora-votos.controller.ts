@@ -94,7 +94,7 @@ export class JuntaReceptoraVotosController {
     return this.juntaReceptoraVotosService.deleteMember(id);
   }
 
-  @MessagePattern(JuntaReceptoraVotosMSG.SET_STATUS_JRV)
+  @MessagePattern(JuntaReceptoraVotosMSG.SET_STATUS_JRV_MEMBER)
   async changeStatusJrvMember(@Payload() payload: any) {
     const { id_jrv_miembro } = payload;
     

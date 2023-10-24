@@ -16,6 +16,7 @@ enum Genero {
 enum EstadoVoto {
   SIN_EMITIR
   EMITIDO
+  VALIDADO
 }
 
 enum EstadoJrv {
@@ -54,16 +55,16 @@ model candidatos_politicos {
 }
 
 model personas_naturales {
-  id_persona_natural     Int      @id @default(autoincrement())
-  dui                    String   @unique @db.VarChar(10)
-  nombres                String   @db.VarChar(150)
-  apellidos              String   @db.VarChar(150)
-  genero                 Genero
-  id_municipio           Int
-  detalle_direccion      String   @db.Text
-  fecha_nacimiento       DateTime @db.Date
-  fecha_vencidmiento_dui DateTime
-  creado_en              DateTime @default(now())
+  id_persona_natural    Int      @id @default(autoincrement())
+  dui                   String   @unique @db.VarChar(10)
+  nombres               String   @db.VarChar(150)
+  apellidos             String   @db.VarChar(150)
+  genero                Genero
+  id_municipio          Int
+  detalle_direccion     String   @db.Text
+  fecha_nacimiento      DateTime @db.Date
+  fecha_vencimiento_dui DateTime
+  creado_en             DateTime @default(now())
 
   municipio            municipios             @relation(fields: [id_municipio], references: [id_municipio])
   candidatos_politicos candidatos_politicos[]
@@ -148,20 +149,31 @@ model jrv_miembros {
 
   jrv               junta_receptora_votos @relation(fields: [id_jrv], references: [id_jrv])
   usuario           usuarios              @relation(fields: [id_usuario], references: [id_usuario])
-  detalles_sufragio detalles_sufragio[]
 }
 
 model detalles_sufragio {
-  id_detalle_sufragio Int        @id @default(autoincrement())
-  id_personas_natural Int
+  id_detalle_sufragio Int     @id @default(autoincrement())
+  id_persona_natural  Int
   id_jrv              Int
-  supervisado_por     Int?
-  asistio_en          DateTime?
-  estado_voto         EstadoVoto @default(SIN_EMITIR)
-  creado_en           DateTime   @default(now())
-  modificado_en       DateTime   @updatedAt
+  uuid_info           String? @db.VarChar(255)
+  ledger_id           String? @db.VarChar(100)
+
+  
+  asistio_en      DateTime?
+  estado_voto     EstadoVoto @default(SIN_EMITIR)
+  creado_en       DateTime   @default(now())
+  modificado_en   DateTime   @updatedAt
 
   jrv                  junta_receptora_votos @relation(fields: [id_jrv], references: [id_jrv])
-  informacion_personal personas_naturales    @relation(fields: [id_personas_natural], references: [id_persona_natural])
-  jrv_miembros         jrv_miembros?         @relation(fields: [supervisado_por], references: [id_jrv_miembro])
+  informacion_personal personas_naturales    @relation(fields: [id_persona_natural], references: [id_persona_natural])
+}
+
+model sufragios {
+  id_sufragio  Int    @id @default(autoincrement())
+  codigo       String @db.VarChar(100)
+  genero       String @db.VarChar(100)
+  municipio    String @db.VarChar(100)
+  departamento String @db.VarChar(100)
+  ledger_id         String @db.VarChar(100)
+  id_voto      Int 
 }
