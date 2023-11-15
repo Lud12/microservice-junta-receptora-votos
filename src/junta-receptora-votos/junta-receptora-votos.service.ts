@@ -75,7 +75,12 @@ export class JuntaReceptoraVotosService {
                 estado: true,
                 creado_en: true,
                 modificado_en: true,
-                Rol: true,
+                Rol: {
+                  select: {
+                    id_rol: true,
+                    nombre: true,
+                  }
+                },
               },
             },
           },
@@ -133,7 +138,12 @@ export class JuntaReceptoraVotosService {
                 estado: true,
                 creado_en: true,
                 modificado_en: true,
-                Rol: true,
+                Rol: {
+                  select: {
+                    id_rol: true,
+                    nombre: true,
+                  }
+                },
               },
             },
           },
@@ -195,7 +205,12 @@ export class JuntaReceptoraVotosService {
                 estado: true,
                 creado_en: true,
                 modificado_en: true,
-                Rol: true,
+                Rol: {
+                  select: {
+                    id_rol: true,
+                    nombre: true,
+                  }
+                },
               },
             },
           },
@@ -318,7 +333,12 @@ export class JuntaReceptoraVotosService {
             estado: true,
             creado_en: true,
             modificado_en: true,
-            Rol: true,
+            Rol: {
+              select: {
+                id_rol: true,
+                nombre: true,
+              }
+            },
           },
         },
       },
@@ -383,7 +403,12 @@ export class JuntaReceptoraVotosService {
             estado: true,
             creado_en: true,
             modificado_en: true,
-            Rol: true,
+            Rol: {
+              select: {
+                id_rol: true,
+                nombre: true,
+              }
+            },
           },
         },
       },
@@ -444,7 +469,12 @@ export class JuntaReceptoraVotosService {
             estado: true,
             creado_en: true,
             modificado_en: true,
-            Rol: true,
+            Rol: {
+              select: {
+                id_rol: true,
+                nombre: true,
+              }
+            },
           },
         },
       },
